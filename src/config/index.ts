@@ -23,11 +23,14 @@ export const APP_CONFIG = {
   name: 'Sentiment AI',
   description: 'AI-powered sentiment analysis marketplace',
   version: '1.0.0',
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
 } as const;
 
 // Hugging Face Transformers configuration
 export const TRANSFORMERS_CONFIG = {
-  API_BASE_URL: 'https://api-inference.huggingface.co/models',
+  // Use local proxy instead of direct HF URL
+  API_BASE_URL: APP_CONFIG.API_BASE_URL,
+  // API key is now managed by the backend, but we keep this field if we need to pass a user token
   API_KEY: import.meta.env.VITE_HUGGINGFACE_API_KEY,
   DEFAULT_MODELS: [
     {

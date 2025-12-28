@@ -94,19 +94,18 @@ export class HuggingFaceService {
         'Content-Type': 'application/json',
       };
 
-      // Add API key if available for faster inference and higher rate limits
+      // Add API key if available
       if (this.apiKey) {
-        headers['Authorization'] = `Bearer ${this.apiKey}`;
+        headers['x-api-key'] = this.apiKey;
       }
 
-      const response = await fetch(`${this.baseUrl}/${modelId}`, {
+      // Call our backend proxy
+      const response = await fetch(`${this.baseUrl}/sentiment`, {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          inputs: text,
-          parameters: {
-            return_all_scores: true, // Get scores for all labels
-          },
+          text,
+          modelId
         }),
       });
 
@@ -116,11 +115,11 @@ export class HuggingFaceService {
         // Handle specific HTTP status codes
         if (response.status === 401) {
           throw new Error(
-            'Unauthorized: Hugging Face API key required. Please set VITE_HUGGINGFACE_API_KEY in your environment variables or use the API key setting in the demo.'
+            'Unauthorized: Invalid or missing API Key. Please generate a key in the dashboard.'
           );
         } else if (response.status === 429) {
           throw new Error(
-            'Rate limit exceeded. Please wait a moment before trying again or add a Hugging Face API key for higher limits.'
+            'Rate limit exceeded. Please wait a moment before trying again.'
           );
         } else if (response.status === 503) {
           throw new Error(
@@ -135,10 +134,11 @@ export class HuggingFaceService {
         );
       }
 
+      // The backend returns the raw HF response
       const result = await response.json();
       const processingTime = Date.now() - startTime;
 
-      // Handle different response formats
+      // Handle different response formats (same logic as before)
       let predictions: HuggingFaceResponse[];
       
       if (Array.isArray(result) && result.length > 0) {
@@ -148,7 +148,9 @@ export class HuggingFaceService {
         // Single prediction format
         predictions = [result];
       } else {
-        throw new Error('Unexpected response format from Hugging Face API');
+        // It's possible the backend returned an error structure that wasn't caught by !ok
+        if (result.error) throw new Error(result.error);
+        throw new Error('Unexpected response format from API');
       }
 
       // Ensure predictions are properly formatted
@@ -179,7 +181,7 @@ export class HuggingFaceService {
   /**
    * Get default transformer models
    */
-  getDefaultModels(): TransformerModel[] {
+  getDefaultModels(): readonly TransformerModel[] {
     return TRANSFORMERS_CONFIG.DEFAULT_MODELS;
   }
 

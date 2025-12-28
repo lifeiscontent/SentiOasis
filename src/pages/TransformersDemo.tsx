@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ModelSelector } from '@/components/ModelSelector';
-import { ApiKeyGuide } from '@/components/ApiKeyGuide';
+import { SentiOasisKeyManager } from '@/components/SentiOasisKeyManager';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -144,8 +144,8 @@ export function TransformersDemo() {
         </p>
       </div>
 
-      {/* API Key Guide */}
-      <ApiKeyGuide />
+      {/* API Key Manager */}
+      <SentiOasisKeyManager />
 
       {/* Model Selection */}
       <ModelSelector
@@ -153,7 +153,7 @@ export function TransformersDemo() {
         onModelChange={setSelectedModel}
         customModelId={customModelId}
         onCustomModelChange={setCustomModelId}
-        showApiKeyInput={true}
+        showApiKeyInput={false}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

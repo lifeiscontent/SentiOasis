@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TransformerModel, ModelValidationResult } from '@/types';
 import { huggingFaceService } from '@/services/huggingface';
-import { TRANSFORMERS_CONFIG } from '@/config';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

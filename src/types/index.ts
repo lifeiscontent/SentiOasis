@@ -6,7 +6,7 @@ export interface TransformerModel {
   modelId: string;
   description: string;
   task: string;
-  labels: string[];
+  labels: string[] | readonly string[];
 }
 
 export interface Agent {
